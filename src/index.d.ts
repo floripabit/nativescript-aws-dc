@@ -1,6 +1,7 @@
-import { Common } from './aws-dc.common';
-export declare class AwsDc extends Common {
-  // define your typings manually
-  // or..
-  // take the ios or android .d.ts files and copy/paste them here
+export declare class AwsDc {
+  constructor();
+  initDb(region: string, IientityPoolId: string): void;
+  getItem(tableName: string, 
+          item: Array<{key:string, value:{data:any, type:string}}>): Promise<Array<any>>;
+  teste();
 }
