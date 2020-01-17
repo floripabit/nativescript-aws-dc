@@ -17,8 +17,8 @@ export class AwsDc {
         let configuration = AWSServiceConfiguration.alloc().initWithRegionCredentialsProvider(regionValue, credentialsProvider);
         AWSDynamoDB.registerDynamoDBWithConfigurationForKey(configuration, "PluginDynamoDB");
     }
-    getItem(tableName, item): Promise<Array<any>> {
-        let promise: Promise<Array<any>> = new Promise<Array<any>>((resolve, reject) => {
+    getItem(tableName, item): Promise<Array<Object>> {
+        let promise: Promise<Array<Object>> = new Promise<Array<Object>>((resolve, reject) => {
             let input = new AWSDynamoDBGetItemInput();
             input.tableName = tableName;
             let keyList = NSMutableArray.alloc().initWithCapacity(item.length);
@@ -26,7 +26,7 @@ export class AwsDc {
             for (let _i = 0, item_2 = item; _i < item_2.length; _i++) {
                 let temp = item_2[_i];
                 let attributeValue = void 0;
-                attributeValue = this.convertItemToAttributeValue(temp.value);
+                attributeValue = AwsDc.convertItemToAttributeValue(temp.value);
                 keyList.addObject(temp.key);
                 objList.addObject(attributeValue);
             }
@@ -34,12 +34,12 @@ export class AwsDc {
             let awsDynamoDB = AWSDynamoDB.DynamoDBForKey("PluginDynamoDB");
             let awsTask = awsDynamoDB.getItem(input);
             awsTask.continueWithBlock(function (task) {
-                this.invokeOnRunLoop(function () {
+                AwsDc.invokeOnRunLoop(function () {
                     if (task.error) {
                         return reject(task.error.userInfo.valueForKey("message"));
                     }
                     else {
-                        return resolve(this.convertItem(task.result));
+                        return resolve(AwsDc.convertItem(task.result));
                     }
                 });
             });
@@ -47,15 +47,15 @@ export class AwsDc {
         return promise;
     }
 
-    private invokeOnRunLoop = function() {
+    private static invokeOnRunLoop = (function() {
         let runLoop = CFRunLoopGetMain();
         return function (func) {
             CFRunLoopPerformBlock(runLoop, kCFRunLoopDefaultMode, func);
             CFRunLoopWakeUp(runLoop);
         };
-    };
+    }());
 
-    private convertItemToAttributeValue(value) {
+    private static convertItemToAttributeValue(value) {
         let resultAttribuValue = new AWSDynamoDBAttributeValue();
         if (value.type === "L") {
             let objList = NSMutableArray.alloc().initWithCapacity(value.data.length);
@@ -94,23 +94,27 @@ export class AwsDc {
         return resultAttribuValue;
     }
 
-    private convertItem(result) {
+    private static convertItem(result) {
         let attributeValue;
         if (!result.item) {
             return null;
         }
-        let res = new Object();
+        let res = new Array<Object>();
         let obj, key, data;
         for (let i = 0; i < result.item.allKeys.count; i++) {
             let tmp = result.item.allKeys.objectAtIndex(i);
+            console.log(tmp);
             attributeValue = result.item.objectForKey(tmp);
+            console.log(attributeValue);
             data = this.convertAttributeValue(attributeValue);
+            console.log(data);
             res[tmp] = data;
+            console.log(res);
         }
         return res;
     }
 
-    private convertAttributeValue(attributeValue) {
+    private static convertAttributeValue(attributeValue) {
         let data;
         if (attributeValue.S != null)
             data = attributeValue.S;
