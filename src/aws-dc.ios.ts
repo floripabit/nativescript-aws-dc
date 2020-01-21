@@ -1,5 +1,5 @@
-declare const AWSRegionType, AWSCognitoCredentialsProvider, AWSServiceConfiguration, AWSDynamoDB,
-    AWSDynamoDBGetItemInput, AWSDynamoDBAttributeValue;
+
+import { Observable, Subject } from 'rxjs';
 
 export class AwsDc {
     private _region: string;
@@ -9,7 +9,6 @@ export class AwsDc {
     }
 
     initDb(region: string, identityPoolId: string) {
-        console.log('oiiiii entrei no initDb');
         this._region = region;
         this._identityPoolId = identityPoolId;
         let regionValue = AWSRegionType[region];
@@ -17,34 +16,33 @@ export class AwsDc {
         let configuration = AWSServiceConfiguration.alloc().initWithRegionCredentialsProvider(regionValue, credentialsProvider);
         AWSDynamoDB.registerDynamoDBWithConfigurationForKey(configuration, "PluginDynamoDB");
     }
-    getItem(tableName, item): Promise<Array<Object>> {
-        let promise: Promise<Array<Object>> = new Promise<Array<Object>>((resolve, reject) => {
-            let input = new AWSDynamoDBGetItemInput();
-            input.tableName = tableName;
-            let keyList = NSMutableArray.alloc().initWithCapacity(item.length);
-            let objList = NSMutableArray.alloc().initWithCapacity(item.length);
-            for (let _i = 0, item_2 = item; _i < item_2.length; _i++) {
-                let temp = item_2[_i];
-                let attributeValue = void 0;
-                attributeValue = AwsDc.convertItemToAttributeValue(temp.value);
-                keyList.addObject(temp.key);
-                objList.addObject(attributeValue);
-            }
-            input.key = NSDictionary.dictionaryWithObjectsForKeys(objList, keyList);
-            let awsDynamoDB = AWSDynamoDB.DynamoDBForKey("PluginDynamoDB");
-            let awsTask = awsDynamoDB.getItem(input);
-            awsTask.continueWithBlock(function (task) {
-                AwsDc.invokeOnRunLoop(function () {
-                    if (task.error) {
-                        return reject(task.error.userInfo.valueForKey("message"));
-                    }
-                    else {
-                        return resolve(AwsDc.convertItem(task.result));
-                    }
-                });
+    getItem(tableName, item): Observable<Array<Object>> {
+        let obs: Subject<Array<Object>> = new Subject<Array<Object>>();
+        let input = new AWSDynamoDBGetItemInput();
+        input.tableName = tableName;
+        let keyList = NSMutableArray.alloc().initWithCapacity(item.length);
+        let objList = NSMutableArray.alloc().initWithCapacity(item.length);
+        for (let _i = 0, item_2 = item; _i < item_2.length; _i++) {
+            let temp = item_2[_i];
+            let attributeValue = void 0;
+            attributeValue = AwsDc.convertItemToAttributeValue(temp.value);
+            keyList.addObject(temp.key);
+            objList.addObject(attributeValue);
+        }
+        input.key = NSDictionary.dictionaryWithObjectsForKeys(objList, keyList);
+        let awsDynamoDB = AWSDynamoDB.DynamoDBForKey("PluginDynamoDB");
+        let awsTask = awsDynamoDB.getItem(input);
+        awsTask.continueWithBlock(function (task) {
+            AwsDc.invokeOnRunLoop(function () {
+                if (task.error) {
+                    obs.error(task.error.userInfo.valueForKey("message"));
+                }
+                else {
+                    obs.next(AwsDc.convertItem(task.result));
+                }
             });
         });
-        return promise;
+        return obs;
     }
 
     private static invokeOnRunLoop = (function() {
@@ -99,17 +97,13 @@ export class AwsDc {
         if (!result.item) {
             return null;
         }
-        let res = new Array<Object>();
-        let obj, key, data;
+        let res = new Array<Object>(result.item.allKeys.count);
+        let data;
         for (let i = 0; i < result.item.allKeys.count; i++) {
             let tmp = result.item.allKeys.objectAtIndex(i);
-            console.log(tmp);
             attributeValue = result.item.objectForKey(tmp);
-            console.log(attributeValue);
-            data = this.convertAttributeValue(attributeValue);
-            console.log(data);
-            res[tmp] = data;
-            console.log(res);
+            data = AwsDc.convertAttributeValue(attributeValue);
+            res[i] = data;
         }
         return res;
     }
