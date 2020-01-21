@@ -19,10 +19,41 @@ export class HomeComponent implements OnInit {
             {key:"serialNumber", value:{data:"50F14AD7F4B3", type:"S"}},
             {key:"timestamp", value:{data:"2019-12-20T19:34:21.000Z", type:"S"}}
         ]).subscribe((data) => {
-            console.log("entrei data");
+            console.log("data:");
             console.log(data);
         }, (err) => {
-            console.log("entrei err");
+            console.log("Error:");
+            console.log(err);
+        });
+        aws.deleteItem("data",
+        [
+            {key:"serialNumber", value:{data:"50F14AD7F4B3111", type:"S"}},
+            {key:"timestamp", value:{data:"2019-12-20T19:34:21.000Z", type:"S"}}
+        ]).subscribe((data) => {
+            console.log("data:");
+            console.log(data);
+        }, (err) => {
+            console.log("Error:");
+            console.log(err);
+        });
+
+        aws.updateItem("data", "serialNumber", {value:{data:"50F14AD7F4B3111", type:"S"}}).subscribe((data) => {
+            console.log("data:");
+            console.log(data);
+        }, (err) => {
+            console.log("Error:");
+            console.log(err);
+        });
+
+        aws.putItem("data",
+        [
+            {key:"serialNumber", value:{data:"50F14AD7F4B3111", type:"S"}},
+            {key:"timestamp", value:{data:"2019-12-20T19:34:21.000Z", type:"S"}}
+        ]).subscribe((data) => {
+            console.log("data:");
+            console.log(data);
+        }, (err) => {
+            console.log("Error:");
             console.log(err);
         });
     }
