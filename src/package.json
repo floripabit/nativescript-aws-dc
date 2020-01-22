@@ -1,6 +1,6 @@
 {
 	"name": "nativescript-aws-dc",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"description": "Your awesome NativeScript plugin.",
 	"main": "aws-dc",
 	"typings": "index.d.ts",
