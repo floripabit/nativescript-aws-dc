@@ -1,7 +1,7 @@
 
 import { Observable, Subject } from 'rxjs';
 
-export class AwsDc {
+export class AwsDcDynamodb {
     private _region: string;
     private _identityPoolId: string;
 
@@ -26,7 +26,7 @@ export class AwsDc {
         for (let _i = 0, item_2 = item; _i < item_2.length; _i++) {
             let temp = item_2[_i];
             let attributeValue = void 0;
-            attributeValue = AwsDc.convertItemToAttributeValue(temp.value);
+            attributeValue = AwsDcDynamodb.convertItemToAttributeValue(temp.value);
             keyList.addObject(temp.key);
             objList.addObject(attributeValue);
         }
@@ -34,12 +34,12 @@ export class AwsDc {
         let awsDynamoDB = AWSDynamoDB.DynamoDBForKey("PluginDynamoDB");
         let awsTask = awsDynamoDB.getItem(input);
         awsTask.continueWithBlock(function (task) {
-            AwsDc.invokeOnRunLoop(function () {
+            AwsDcDynamodb.invokeOnRunLoop(function () {
                 if (task.error) {
                     observer.error(task.error.userInfo.valueForKey("message"));
                 }
                 else {
-                    observer.next(AwsDc.convertItem(task.result));
+                    observer.next(AwsDcDynamodb.convertItem(task.result));
                 }
             });
         });
@@ -55,7 +55,7 @@ export class AwsDc {
         for (let _i = 0, item_1 = item; _i < item_1.length; _i++) {
             let temp = item_1[_i];
             let attributeValue = void 0;
-            attributeValue = AwsDc.convertItemToAttributeValue(temp.value);
+            attributeValue = AwsDcDynamodb.convertItemToAttributeValue(temp.value);
             keyList.addObject(temp.key);
             objList.addObject(attributeValue);
         }
@@ -63,7 +63,7 @@ export class AwsDc {
         let awsDynamoDB = AWSDynamoDB.DynamoDBForKey("PluginDynamoDB");
         let awsTask = awsDynamoDB.putItem(input);
         awsTask.continueWithBlock(function (task) {
-            AwsDc.invokeOnRunLoop(function () {
+            AwsDcDynamodb.invokeOnRunLoop(function () {
                 if (task.error) {
                     observer.error(task.error.userInfo.valueForKey("message"));
                 }
@@ -84,7 +84,7 @@ export class AwsDc {
         for (let _i = 0, item_3 = item; _i < item_3.length; _i++) {
             let temp = item_3[_i];
             let attributeValue = void 0;
-            attributeValue = AwsDc.convertItemToAttributeValue(temp.value);
+            attributeValue = AwsDcDynamodb.convertItemToAttributeValue(temp.value);
             keyList.addObject(temp.key);
             objList.addObject(attributeValue);
         }
@@ -92,7 +92,7 @@ export class AwsDc {
         let awsDynamoDB = AWSDynamoDB.DynamoDBForKey("PluginDynamoDB");
         let awsTask = awsDynamoDB.deleteItem(input);
         awsTask.continueWithBlock(function (task) {
-            AwsDc.invokeOnRunLoop(function () {
+            AwsDcDynamodb.invokeOnRunLoop(function () {
                 if (task.error) {
                     observer.error(task.error.userInfo.valueForKey("message"));
                 }
@@ -113,7 +113,7 @@ export class AwsDc {
         for (let _i = 0, key_1 = key; _i < key_1.length; _i++) {
             let temp = key_1[_i];
             let attributeValue = void 0;
-            attributeValue = AwsDc.convertItemToAttributeValue(temp.value);
+            attributeValue = AwsDcDynamodb.convertItemToAttributeValue(temp.value);
             keyList.addObject(temp.key);
             objList.addObject(attributeValue);
         }
@@ -123,7 +123,7 @@ export class AwsDc {
             objList = NSMutableArray.alloc().initWithCapacity(attributeUpdates.length);
             for (let _a = 0, attributeUpdates_1 = attributeUpdates; _a < attributeUpdates_1.length; _a++) {
                 let temp = attributeUpdates_1[_a];
-                let attributeValue = AwsDc.convertItemToAttributeValue(temp.value);
+                let attributeValue = AwsDcDynamodb.convertItemToAttributeValue(temp.value);
                 let attributeValueUpdateTmp = new AWSDynamoDBAttributeValueUpdate();
                 attributeValueUpdateTmp.action = temp.action;
                 attributeValueUpdateTmp.value = attributeValue;
@@ -135,7 +135,7 @@ export class AwsDc {
         let awsDynamoDB = AWSDynamoDB.DynamoDBForKey("PluginDynamoDB");
         let awsTask = awsDynamoDB.updateItem(input);
         awsTask.continueWithBlock(function (task) {
-            AwsDc.invokeOnRunLoop(function () {
+            AwsDcDynamodb.invokeOnRunLoop(function () {
                 if (task.error) {
                     observer.error(task.error.userInfo.valueForKey("message"));
                 }
@@ -204,8 +204,8 @@ export class AwsDc {
         for (let i = 0; i < result.item.allKeys.count; i++) {
             let tmp = result.item.allKeys.objectAtIndex(i);
             attributeValue = result.item.objectForKey(tmp);
-            data = AwsDc.convertAttributeValue(attributeValue);
-            res[i] = data;
+            data = AwsDcDynamodb.convertAttributeValue(attributeValue);
+            res[tmp] = data;
         }
         return res;
     }

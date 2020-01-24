@@ -7,6 +7,8 @@ android {
 dependencies {
     // Describe plugin native Android dependencies like
 	// implementation "groupName:pluginName:ver" 
-    compile 'com.amazonaws:aws-android-sdk-core:2.16.+'
-    compile 'com.amazonaws:aws-android-sdk-ddb:2.16.+'
+    compile 'com.amazonaws:aws-android-sdk-core:2.11.0'
+    compile 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.11.0'
+    compile 'com.amazonaws:aws-android-sdk-ddb:2.11.0'
+    compile 'com.google.code.gson:gson:2.2.4'
 }
