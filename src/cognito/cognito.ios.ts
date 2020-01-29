@@ -10,20 +10,19 @@ export class AwsDcCognito extends Common {
 
     constructor(userPoolId, clientId, secret?, region?: Region) {
         super();
-        console.log("entrei IOS constructor");
+
         const serviceConf = new AWSServiceConfiguration(
             AWSRegionType[region] || AWSRegionUSEast1,
             null
         );
-        console.log("constructor 2");
+
         const conf = new AWSCognitoIdentityUserPoolConfiguration(
             clientId, secret, userPoolId
         );
-        console.log("constructor 3");
+
         AWSCognitoIdentityUserPool
             .registerCognitoIdentityUserPoolWithConfigurationUserPoolConfigurationForKey(serviceConf, conf, "UserPool");
         this.userPool = AWSCognitoIdentityUserPool.CognitoIdentityUserPoolForKey("UserPool");
-        console.log("constructor 4");
     }
 
     public getCurrentUser() {
@@ -43,7 +42,6 @@ export class AwsDcCognito extends Common {
     }
 
     public signUp(userId, password, attributes) {
-
         return new Promise<any>((resolve, reject) => {
             // @ts-ignore
             const callBack = t => {

@@ -17,9 +17,10 @@ export class AwsDcDynamodb {
         AWSDynamoDB.registerDynamoDBWithConfigurationForKey(configuration, "PluginDynamoDB");
     }
 
-    getItem(tableName, item): Observable<Array<Object>> {
-        let observer: Subject<Array<Object>> = new Subject<Array<Object>>();
+    getItem(tableName, item): Observable<any> {
+        let observer: Subject<any> = new Subject<any>();
         let input = new AWSDynamoDBGetItemInput();
+
         input.tableName = tableName;
         let keyList = NSMutableArray.alloc().initWithCapacity(item.length);
         let objList = NSMutableArray.alloc().initWithCapacity(item.length);
@@ -46,8 +47,8 @@ export class AwsDcDynamodb {
         return observer;
     }
 
-    putItem(tableName, item): Observable<Array<Object>> {
-        let observer: Subject<Array<Object>> = new Subject<Array<Object>>();
+    putItem(tableName, item): Observable<any> {
+        let observer: Subject<any> = new Subject<any>();
         let input = new AWSDynamoDBPutItemInput();
         input.tableName = tableName;
         let keyList = NSMutableArray.alloc().initWithCapacity(item.length);
@@ -75,8 +76,8 @@ export class AwsDcDynamodb {
         return observer;
     }
 
-    deleteItem(tableName, item): Observable<Array<Object>> {
-        let observer: Subject<Array<Object>> = new Subject<Array<Object>>();
+    deleteItem(tableName, item): Observable<any> {
+        let observer: Subject<any> = new Subject<any>();
         let input = new AWSDynamoDBDeleteItemInput();
         input.tableName = tableName;
         let keyList = NSMutableArray.alloc().initWithCapacity(item.length);
@@ -104,8 +105,8 @@ export class AwsDcDynamodb {
         return observer;
     }
 
-    updateItem(tableName, key, attributeUpdates): Observable<Array<Object>> {
-        let observer: Subject<Array<Object>> = new Subject<Array<Object>>();
+    updateItem(tableName, key, attributeUpdates): Observable<any> {
+        let observer: Subject<any> = new Subject<any>();
         let input = new AWSDynamoDBUpdateItemInput();
         input.tableName = tableName;
         let keyList = NSMutableArray.alloc().initWithCapacity(key.length);
@@ -194,12 +195,12 @@ export class AwsDcDynamodb {
         return resultAttribuValue;
     }
 
-    private static convertItem(result) {
+    private static convertItem(result): any {
         let attributeValue;
         if (!result.item) {
             return null;
         }
-        let res = new Array<Object>(result.item.allKeys.count);
+        let res = new Object();
         let data;
         for (let i = 0; i < result.item.allKeys.count; i++) {
             let tmp = result.item.allKeys.objectAtIndex(i);
@@ -218,8 +219,16 @@ export class AwsDcDynamodb {
             data = attributeValue.N;
         else if (attributeValue.B != null)
             data = attributeValue.B;
-        else if (attributeValue.M != null)
-            data = attributeValue.M;
+        else if (attributeValue.M != null) {
+            let allKeys = attributeValue.M.allKeys;
+            let allValues = attributeValue.M.allValues;
+            let res = new Object();
+
+            for (let i = 0; i < allKeys.count; i++) {
+                res[allKeys[i]] = AwsDcDynamodb.convertAttributeValue(allValues[i]);
+            }
+            data = res;
+        }
         else if (attributeValue.L != null) {
             let r = new Array();
             let list = attributeValue.L;

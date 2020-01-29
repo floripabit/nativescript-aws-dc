@@ -14,21 +14,21 @@ export class AwsDcDynamodb {
         this.region = region;
         this.identityPoolId = identityPoolId;
     }
-    getItem(tableName: any, item: any): Observable<Array<Object>> {
+    getItem(tableName: any, item: any): Observable<any> {
         return this.mainFunction("getItem", tableName, item);
     }
-    putItem(tableName: any, item: any): Observable<Array<Object>> {
+    putItem(tableName: any, item: any): Observable<any> {
         return this.mainFunction("putItem", tableName, item);
     }
-    deleteItem(tableName: any, item: any): Observable<Array<Object>> {
+    deleteItem(tableName: any, item: any): Observable<any> {
         return this.mainFunction("deleteItem", tableName, item);
     }
-    updateItem(tableName: any, key: any, attributeUpdates: any): Observable<Array<Object>> {
+    updateItem(tableName: any, key: any, attributeUpdates: any): Observable<any> {
         return this.mainFunction("updateItem", tableName, key, attributeUpdates);
     }
 
-    private mainFunction(action: string, tableName: any, item: any, attributeUpdates?: any): Observable<Array<Object>> {
-        let observer: Subject<Array<Object>> = new Subject<Array<Object>>();
+    private mainFunction(action: string, tableName: any, item: any, attributeUpdates?: any): Observable<any> {
+        let observer: Subject<any> = new Subject<any>();
         let worker;
         if (global["TNS_WEBPACK"]) {
             const WorkerScript = require("nativescript-worker-loader!./ddbworker.js");
@@ -47,10 +47,8 @@ export class AwsDcDynamodb {
                         "tableName": tableName, "item": item });
         }
         worker.onmessage = function (msg) {
-            console.log("inside the function... \n\n\n");
-            console.log(msg.data);
+            console.log(msg.data.payload);
             observer.next(msg.data);
-            console.log("outside the function...\n\n\n");
         };
         worker.onerror = function (e) {
             observer.error(e.message);

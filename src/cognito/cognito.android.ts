@@ -25,11 +25,9 @@ export class AwsDcCognito extends Common {
 
     constructor(userPoolId, clientId, secret?, region?: Region) {
         super();
-        console.log("entrei no constructor");
         this.userPool = new CognitoUserPool(
             app.android.context, userPoolId, clientId, secret, Regions[region]
         );
-        console.log("sai do constructor no constructor");
     }
 
     public getCurrentUser() {
@@ -46,7 +44,6 @@ export class AwsDcCognito extends Common {
     }
 
     public signUp(userId, password, attributes) {
-
         return new Promise<any>((resolve, reject) => {
             const callBack = new SignUpHandler({
                 onSuccess(cognitoUser, userConfirmed, codeDeliveryDetails) {
