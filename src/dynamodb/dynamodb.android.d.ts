@@ -4,10 +4,34 @@ export declare class AwsDcDynamodb {
     private identityPoolId;
     constructor();
     initDb(region: string, identityPoolId: string): void;
-    getItem(tableName: any, item: any): Observable<any>;
-    putItem(tableName: any, item: any): Observable<any>;
-    deleteItem(tableName: any, item: any): Observable<any>;
+    getItem(tableName: any, item: Array<{
+        key: string;
+        value: {
+            data: any;
+            type: string;
+        };
+    }>): Observable<any>;
+    putItem(tableName: any, item: Array<{
+        key: string;
+        value: {
+            data: any;
+            type: string;
+        };
+    }>): Observable<any>;
+    deleteItem(tableName: any, item: Array<{
+        key: string;
+        value: {
+            data: any;
+            type: string;
+        };
+    }>): Observable<any>;
     updateItem(tableName: any, key: any, attributeUpdates: any): Observable<any>;
-    queryItem(tableName: any, item: any, queryExpression: any): Observable<any[]>;
+    queryItem(tableName: any, queryExpression: string, item: Array<{
+        key: string;
+        value: {
+            data: any;
+            type: string;
+        };
+    }>): Observable<any[]>;
     private mainFunction;
 }

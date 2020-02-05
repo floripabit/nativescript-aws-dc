@@ -14,20 +14,30 @@ export class AwsDcDynamodb {
         this.region = region;
         this.identityPoolId = identityPoolId;
     }
-    getItem(tableName: any, item: any): Observable<any> {
+    getItem(tableName: any,
+            item: Array<{key: string, value: {
+                data: any, type: string
+            }}>): Observable<any> {
         return this.mainFunction("getItem", tableName, item);
     }
-    putItem(tableName: any, item: any): Observable<any> {
+    putItem(tableName: any, item: Array<{key: string, value: {
+                data: any, type: string
+            }}>): Observable<any> {
         return this.mainFunction("putItem", tableName, item);
     }
-    deleteItem(tableName: any, item: any): Observable<any> {
+    deleteItem( tableName: any, item: Array<{key: string, value: {
+                    data: any, type: string
+                }}>): Observable<any> {
         return this.mainFunction("deleteItem", tableName, item);
     }
     updateItem(tableName: any, key: any, attributeUpdates: any): Observable<any> {
         return this.mainFunction("updateItem", tableName, key, attributeUpdates);
     }
 
-    queryItem(tableName: any, item: any, queryExpression: any): Observable<any[]> {
+    queryItem(tableName: any, queryExpression: string,
+              item: Array<{key: string, value: {
+                data: any, type: string
+              }}>, ): Observable<any[]> {
         let observer: Subject<any[]> = new Subject<any[]>();
         let worker;
         if (global["TNS_WEBPACK"]) {

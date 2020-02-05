@@ -5,12 +5,21 @@ const worker: Worker = self as any;
 
 worker.onmessage = ((msg) => {
 
+    if (!msg.data.action ||
+        msg.data.action === "" ||
+        msg.data.action === " " ||
+        !msg.data.region ||
+        msg.data.region === "" ||
+        msg.data.region === " ") {
+        return;
+    }
     let action = msg.data.action;
     let region = msg.data.region;
     let identityPoolId = msg.data.identityPoolId;
-    let tableName = msg.data.tableName;
-    let item = msg.data.item;
+    let tableName: string = msg.data.tableName;
+    let item: Array<{key: string, value: {data: any, type: string}}> = msg.data.item;
     let attributeUpdates = msg.data.attributeUpdates;
+    let queryExpression: string = msg.data.queryExpression;
     let reg;
 
     switch (region) {
@@ -80,11 +89,12 @@ worker.onmessage = ((msg) => {
             let result: com.amazonaws.services.dynamodbv2.model.QueryResult;
             let query = new com.amazonaws.services.dynamodbv2.model.QueryRequest();
             query.withTableName(tableName);
-            query.setKeyConditionExpression("serialNumber = :serialBegin");
+            query.setKeyConditionExpression(queryExpression);
             let expressionMap = new java.util.HashMap<string, com.amazonaws.services.dynamodbv2.model.AttributeValue>();
-            let attribute = new com.amazonaws.services.dynamodbv2.model.AttributeValue();
-            attribute.withS("50F14AD7F4B3");
-            expressionMap.put(":serialBegin", attribute);
+            item.forEach(element => {
+                expressionMap.put(element.key,
+                    ddbUtils.convertItemToAttributeValue(element.value));
+            });
             query.withExpressionAttributeValues(expressionMap);
             result = ddbClient.query(query);
             let finalResult = new Array<any>();
