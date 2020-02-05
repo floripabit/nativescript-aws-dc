@@ -244,6 +244,16 @@ module.exports = env => {
                         },
                     ].filter(loader => !!loader)
                 },
+                // Compile TypeScript files with ahead-of-time compiler.
+                {
+                    test: /.ts$/, exclude: /.worker.ts$/, use: [
+                        "nativescript-dev-webpack/moduleid-compat-loader",
+                        "@ngtools/webpack",
+                    ]
+                },
+
+                // Compile Worker files with ts-loader
+                { test: /\.worker.ts$/, loader: "ts-loader" },
 
                 { test: /\.html$|\.xml$/, use: "raw-loader" },
 

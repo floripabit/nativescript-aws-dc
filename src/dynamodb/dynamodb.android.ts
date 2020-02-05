@@ -27,14 +27,36 @@ export class AwsDcDynamodb {
         return this.mainFunction("updateItem", tableName, key, attributeUpdates);
     }
 
+    queryItem(tableName: any, item: any, queryExpression: any): Observable<any[]> {
+        let observer: Subject<any[]> = new Subject<any[]>();
+        let worker;
+        if (global["TNS_WEBPACK"]) {
+            const WorkerScript = require("nativescript-worker-loader!./ddb.worker.js");
+            worker = new WorkerScript();
+        } else {
+            worker = new Worker("./ddb.worker.js");
+        }
+        worker.postMessage({ "action": "query", "region": this.region,
+                    "identityPoolId": this.identityPoolId,
+                    "tableName": tableName, "item": item,
+                    "queryExpression": queryExpression });
+        worker.onmessage = function (msg) {
+            observer.next(msg.data);
+        };
+        worker.onerror = function (e) {
+            observer.error(e.message);
+        };
+        return observer;
+    }
+
     private mainFunction(action: string, tableName: any, item: any, attributeUpdates?: any): Observable<any> {
         let observer: Subject<any> = new Subject<any>();
         let worker;
         if (global["TNS_WEBPACK"]) {
-            const WorkerScript = require("nativescript-worker-loader!./ddbworker.js");
+            const WorkerScript = require("nativescript-worker-loader!./ddb.worker.js");
             worker = new WorkerScript();
         } else {
-            worker = new Worker("./ddbworker.js");
+            worker = new Worker("./ddb.worker.js");
         }
         if (attributeUpdates) {
             worker.postMessage({ "action": action, "region": this.region,
@@ -47,7 +69,6 @@ export class AwsDcDynamodb {
                         "tableName": tableName, "item": item });
         }
         worker.onmessage = function (msg) {
-            console.log(msg.data.payload);
             observer.next(msg.data);
         };
         worker.onerror = function (e) {

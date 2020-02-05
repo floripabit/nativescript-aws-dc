@@ -1,14 +1,18 @@
 /* Include.gradle configuration: http://docs.nativescript.org/plugins/plugins#includegradle-specification */
 
 android {
-	
+    defaultConfig {
+        // Enabling multidex support.
+        multiDexEnabled true
+    }
 }
 
 dependencies {
     // Describe plugin native Android dependencies like
 	// implementation "groupName:pluginName:ver" 
-    compile 'com.amazonaws:aws-android-sdk-core:2.11.0'
-    compile 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.11.0'
-    compile 'com.amazonaws:aws-android-sdk-ddb:2.11.0'
+    compile 'com.amazonaws:aws-android-sdk-core:2.16.+'
+    compile 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.16.+'
+    compile 'com.amazonaws:aws-android-sdk-ddb:2.16.+'
+    compile 'com.amazonaws:aws-android-sdk-ddb-mapper:2.16.+'
     compile 'com.google.code.gson:gson:2.2.4'
 }
