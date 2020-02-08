@@ -9,5 +9,17 @@ export declare class AwsDcDynamodb {
   deleteItem(tableName: string, 
              item: Array<{key:string, value:{data:any, type:string}}>): Observable<any>;
   updateItem(tableName: string, key: any, attributeUpdates: any): Observable<any>;
-  queryItem(tableName: string, item: any, queryExpression: any): Observable<any>;
+  queryItem(tableName: any, queryExpression: string, attributeList: Array<{
+        key: string;
+        value: {
+            data: any;
+            type: string;
+        };
+    }>, tagList?: Array<{
+        key: string;
+        value: {
+            data: any;
+            type: string;
+        };
+    }>, limit?: number): Observable<any[]>;
 }

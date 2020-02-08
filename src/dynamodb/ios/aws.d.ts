@@ -30,7 +30,12 @@ declare class AWSDynamoDB{
     getItem(input:AWSDynamoDBGetItemInput):AWSTask<AWSDynamoDBGetItemOutput>;
     deleteItem(input:AWSDynamoDBDeleteItemInput):AWSTask<AWSDynamoDBDeleteItemOutput>;
     updateItem(input:AWSDynamoDBUpdateItemInput):AWSTask<AWSDynamoDBUpdateItemOutput>;
+    query(input:AWSDynamoDBQueryInput):AWSTask<Array<AWSDynamoDBQueryOutput>>;
     static DynamoDBForKey(key:String):AWSDynamoDB;
+}
+
+declare class AWSDynamoDBQueryExpression{
+    keyConditionExpression: NSString;
 }
 
 declare class AWSDynamoDBAttributeValue{
@@ -105,6 +110,31 @@ declare class AWSDynamoDBUpdateItemInput{
     tableName:String;
     key:any;
     attributeUpdates:any;
+}
+
+declare class AWSDynamoDBQueryInput{
+    tableName:string;
+    key:any;
+    keyConditions:AWSDynamoDBCondition;
+    keyConditionExpression:string;
+    filterExpression:string;
+    expressionAttributeValues:any; 
+    expressionAttributeNames:any; 
+    projectionExpression:string;
+    limit:number;
+    attributesToGet:any;
+    conditionalOperator:any;
+    consistentRead:any;
+    exclusiveStartKey:any;
+    queryFilter:string;
+    returnConsumedCapacity:number;
+    scanIndexForward:any;
+    select:any;
+}
+
+declare class AWSDynamoDBQueryOutput{
+    tableName:String;
+    key:any;
 }
 
 

@@ -26,12 +26,18 @@ export declare class AwsDcDynamodb {
         };
     }>): Observable<any>;
     updateItem(tableName: any, key: any, attributeUpdates: any): Observable<any>;
-    queryItem(tableName: any, queryExpression: string, item: Array<{
+    queryItem(tableName: any, queryExpression: string, attributeList: Array<{
         key: string;
         value: {
             data: any;
             type: string;
         };
-    }>): Observable<any[]>;
+    }>, tagList?: Array<{
+        key: string;
+        value: {
+            data: any;
+            type: string;
+        };
+    }>, limit?: number): Observable<any[]>;
     private mainFunction;
 }

@@ -1,5 +1,5 @@
 import "globals";
-import * as ddbUtils from './ddbutils.android';
+import * as ddbUtils from './android/ddbutils.android';
 
 const worker: Worker = self as any;
 
@@ -21,6 +21,18 @@ worker.onmessage = ((msg) => {
     let attributeUpdates = msg.data.attributeUpdates;
     let queryExpression: string = msg.data.queryExpression;
     let reg;
+    let attributeList: Array<{key: string, value: {data: any, type: string}}>;
+    let tagList: Array<{key: string, value: {data: any, type: string}}>;
+    let limit: number;
+    if (msg.data.attributeList) {
+        attributeList = msg.data.attributeList;
+    }
+    if (msg.data.tagList) {
+        tagList = msg.data.tagList;
+    }
+    if (msg.data.limit) {
+        limit = msg.data.limit;
+    }
 
     switch (region) {
         case "AWSRegionUSEast1": { reg = com.amazonaws.regions.Regions.US_EAST_1; break; }
@@ -49,10 +61,12 @@ worker.onmessage = ((msg) => {
 
     let map = new java.util.HashMap();
 
-    for (let temp of item) {
-        let attributeValue: com.amazonaws.services.dynamodbv2.model.AttributeValue;
-        attributeValue = ddbUtils.convertItemToAttributeValue(temp.value);
-        map.put(temp.key, attributeValue);
+    if (item) {
+        for (let temp of item) {
+            let attributeValue: com.amazonaws.services.dynamodbv2.model.AttributeValue;
+            attributeValue = ddbUtils.convertItemToAttributeValue(temp.value);
+            map.put(temp.key, attributeValue);
+        }
     }
     let attributeUpdatesMap;
     if (attributeUpdates) {
@@ -90,12 +104,23 @@ worker.onmessage = ((msg) => {
             let query = new com.amazonaws.services.dynamodbv2.model.QueryRequest();
             query.withTableName(tableName);
             query.setKeyConditionExpression(queryExpression);
-            let expressionMap = new java.util.HashMap<string, com.amazonaws.services.dynamodbv2.model.AttributeValue>();
-            item.forEach(element => {
-                expressionMap.put(element.key,
+            let expressionAttributesMap = new java.util.HashMap<string, com.amazonaws.services.dynamodbv2.model.AttributeValue>();
+            let expressionNamesMap = new java.util.HashMap<string, com.amazonaws.services.dynamodbv2.model.AttributeValue>();
+            attributeList.forEach(element => {
+                expressionAttributesMap.put(element.key,
                     ddbUtils.convertItemToAttributeValue(element.value));
             });
-            query.withExpressionAttributeValues(expressionMap);
+            query.withExpressionAttributeValues(expressionAttributesMap);
+            if (tagList) {
+                tagList.forEach(element => {
+                    expressionNamesMap.put(element.key, element.value.data);
+                });
+                query.withExpressionAttributeNames(expressionNamesMap);
+            }
+            if (limit) {
+                let limitJava = new java.lang.Integer(limit);
+                query.withLimit(limitJava);
+            }
             result = ddbClient.query(query);
             let finalResult = new Array<any>();
             let results = result.getItems();

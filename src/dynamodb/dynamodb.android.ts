@@ -35,9 +35,9 @@ export class AwsDcDynamodb {
     }
 
     queryItem(tableName: any, queryExpression: string,
-              item: Array<{key: string, value: {
-                data: any, type: string
-              }}>, ): Observable<any[]> {
+              attributeList: Array<{key: string; value: {data: any; type: string; }}>,
+              tagList?: Array<{key: string; value: {data: any; type: string; }}>,
+            limit?: number): Observable<any[]> {
         let observer: Subject<any[]> = new Subject<any[]>();
         let worker;
         if (global["TNS_WEBPACK"]) {
@@ -48,7 +48,8 @@ export class AwsDcDynamodb {
         }
         worker.postMessage({ "action": "query", "region": this.region,
                     "identityPoolId": this.identityPoolId,
-                    "tableName": tableName, "item": item,
+                    "tableName": tableName, "tagList": tagList,
+                    "attributeList": attributeList, "limit": limit,
                     "queryExpression": queryExpression });
         worker.onmessage = function (msg) {
             observer.next(msg.data);
