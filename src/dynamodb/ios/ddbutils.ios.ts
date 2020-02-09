@@ -4,7 +4,7 @@ export function convertItemToAttributeValue(value) {
         let objList = NSMutableArray.alloc().initWithCapacity(value.data.length);
         for (let _i = 0, _a = value.data; _i < _a.length; _i++) {
             let tmp = _a[_i];
-            let attributeValue = this.convertItemToAttributeValue(tmp);
+            let attributeValue = convertItemToAttributeValue(tmp);
             objList.addObject(attributeValue);
         }
         resultAttribuValue.L = NSArray.arrayWithArray(objList);
@@ -91,7 +91,7 @@ export function convertAttributeValue(attributeValue) {
         let r = new Array();
         let list = attributeValue.L;
         for (let i = 0; i < list.count; i++) {
-            r.push(this.convertAttributeValue(list.objectAtIndex(i)));
+            r.push(convertAttributeValue(list.objectAtIndex(i)));
         }
         data = r;
     }
