@@ -37,7 +37,8 @@ export class AwsDcDynamodb {
     queryItem(tableName: any, queryExpression: string,
               attributeList: Array<{key: string; value: {data: any; type: string; }}>,
               tagList?: Array<{key: string; value: {data: any; type: string; }}>,
-            limit?: number): Observable<any[]> {
+              scanIndexForward?: boolean,
+              limit?: number): Observable<any[]> {
         let observer: Subject<any[]> = new Subject<any[]>();
         let worker;
         if (global["TNS_WEBPACK"]) {
@@ -50,6 +51,7 @@ export class AwsDcDynamodb {
                     "identityPoolId": this.identityPoolId,
                     "tableName": tableName, "tagList": tagList,
                     "attributeList": attributeList, "limit": limit,
+                    "scanIndexForward": scanIndexForward,
                     "queryExpression": queryExpression });
         worker.onmessage = function (msg) {
             observer.next(msg.data);

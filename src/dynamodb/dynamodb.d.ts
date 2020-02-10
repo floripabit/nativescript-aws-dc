@@ -10,16 +10,16 @@ export declare class AwsDcDynamodb {
              item: Array<{key:string, value:{data:any, type:string}}>): Observable<any>;
   updateItem(tableName: string, key: any, attributeUpdates: any): Observable<any>;
   queryItem(tableName: any, queryExpression: string, attributeList: Array<{
-        key: string;
-        value: {
-            data: any;
-            type: string;
-        };
-    }>, tagList?: Array<{
-        key: string;
-        value: {
-            data: any;
-            type: string;
-        };
-    }>, limit?: number): Observable<any[]>;
+            key: string;
+            value: {
+                data: any;
+                type: string;
+            };
+            }>, tagList?: Array<{
+                key: string;
+                value: {
+                    data: any;
+                    type: string;
+            };
+            }>, scanIndexForward?: boolean, limit?: number): Observable<any[]>;
 }

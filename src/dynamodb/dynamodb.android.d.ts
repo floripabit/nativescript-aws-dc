@@ -38,6 +38,6 @@ export declare class AwsDcDynamodb {
             data: any;
             type: string;
         };
-    }>, limit?: number): Observable<any[]>;
+    }>, scanIndexForward?: boolean, limit?: number): Observable<any[]>;
     private mainFunction;
 }

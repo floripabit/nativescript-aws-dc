@@ -24,6 +24,7 @@ worker.onmessage = ((msg) => {
     let attributeList: Array<{key: string, value: {data: any, type: string}}>;
     let tagList: Array<{key: string, value: {data: any, type: string}}>;
     let limit: number;
+    let scanIndexForward: boolean;
     if (msg.data.attributeList) {
         attributeList = msg.data.attributeList;
     }
@@ -32,6 +33,11 @@ worker.onmessage = ((msg) => {
     }
     if (msg.data.limit) {
         limit = msg.data.limit;
+    }
+
+    if (msg.data.scanIndexForward !== undefined &&
+        msg.data.scanIndexForward !== null) {
+        scanIndexForward = msg.data.scanIndexForward;
     }
 
     switch (region) {
@@ -116,6 +122,10 @@ worker.onmessage = ((msg) => {
                     expressionNamesMap.put(element.key, element.value.data);
                 });
                 query.withExpressionAttributeNames(expressionNamesMap);
+            }
+            if (scanIndexForward !== undefined && scanIndexForward !== null) {
+                let valueBoolean = new java.lang.Boolean(scanIndexForward);
+                query.setScanIndexForward(valueBoolean);
             }
             if (limit) {
                 let limitJava = new java.lang.Integer(limit);

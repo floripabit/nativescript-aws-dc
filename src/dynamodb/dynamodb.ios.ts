@@ -170,10 +170,12 @@ export class AwsDcDynamodb {
     queryItem(tableName: any, queryExpression: string,
               attributeList: Array<{key: string; value: {data: any; type: string; }}>,
               tagList?: Array<{key: string; value: {data: any; type: string; }}>,
+              scanIndexForward?: boolean,
               limit?: number): Observable<any[]> {
         let observer: Subject<any[]> = new Subject<any[]>();
         let input = new AWSDynamoDBQueryInput();
         input.tableName = tableName;
+        input.scanIndexForward = scanIndexForward;
         input.keyConditionExpression = queryExpression;
         let keyListAttribute = NSMutableArray.alloc().initWithCapacity(attributeList.length);
         let objListAttribute = NSMutableArray.alloc().initWithCapacity(attributeList.length);
