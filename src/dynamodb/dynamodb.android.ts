@@ -42,10 +42,10 @@ export class AwsDcDynamodb {
         let observer: Subject<any[]> = new Subject<any[]>();
         let worker;
         if (global["TNS_WEBPACK"]) {
-            const WorkerScript = require("nativescript-worker-loader!./ddb.worker.js");
+            const WorkerScript = require("nativescript-worker-loader!./ddb-android.worker.js");
             worker = new WorkerScript();
         } else {
-            worker = new Worker("./ddb.worker.js");
+            worker = new Worker("./ddb-android.worker.js");
         }
         worker.postMessage({ "action": "query", "region": this.region,
                     "identityPoolId": this.identityPoolId,
@@ -66,10 +66,10 @@ export class AwsDcDynamodb {
         let observer: Subject<any> = new Subject<any>();
         let worker;
         if (global["TNS_WEBPACK"]) {
-            const WorkerScript = require("nativescript-worker-loader!./ddb.worker.js");
+            const WorkerScript = require("nativescript-worker-loader!./ddb-android.worker.js");
             worker = new WorkerScript();
         } else {
-            worker = new Worker("./ddb.worker.js");
+            worker = new Worker("./ddb-android.worker.js");
         }
         if (attributeUpdates) {
             worker.postMessage({ "action": action, "region": this.region,

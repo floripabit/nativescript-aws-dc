@@ -1,3 +1,3 @@
 use_frameworks!
-pod 'AWSCognitoIdentityProvider'
-pod 'AWSDynamoDB'
+pod 'AWSCognitoIdentityProvider', '~> 2.15.0'
+pod 'AWSDynamoDB', '~> 2.15.0'
