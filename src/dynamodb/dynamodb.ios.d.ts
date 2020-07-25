@@ -1,24 +1,24 @@
 import { Observable } from 'rxjs';
 export declare class AwsDcDynamodb {
-    private _region;
-    private _identityPoolId;
+    private region;
+    private identityPoolId;
     constructor();
     initDb(region: string, identityPoolId: string): void;
-    getItem(tableName: string, item: Array<{
+    getItem(tableName: any, item: Array<{
         key: string;
         value: {
             data: any;
             type: string;
         };
     }>): Observable<any>;
-    putItem(tableName: string, item: Array<{
+    putItem(tableName: any, item: Array<{
         key: string;
         value: {
             data: any;
             type: string;
         };
     }>): Observable<any>;
-    deleteItem(tableName: string, item: Array<{
+    deleteItem(tableName: any, item: Array<{
         key: string;
         value: {
             data: any;
@@ -39,5 +39,5 @@ export declare class AwsDcDynamodb {
             type: string;
         };
     }>, scanIndexForward?: boolean, limit?: number): Observable<any[]>;
-    private static invokeOnRunLoop;
+    private mainFunction;
 }

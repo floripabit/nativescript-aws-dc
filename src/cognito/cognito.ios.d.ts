@@ -17,6 +17,7 @@ export declare class AwsDcCognito extends Common {
     logout(): void;
     private static getSessionObject;
     private static getErrorObject;
+    private static invokeOnRunLoop;
 }
 export declare enum Region {
     UNKNOWN = "Unknown",
